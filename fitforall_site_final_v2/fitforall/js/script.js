@@ -8,7 +8,9 @@ function scrollToSection(sectionId) {
     const element = document.getElementById(sectionId);
     if (element) {
         const headerHeight = document.querySelector('.header').offsetHeight;
-        const elementPosition = element.offsetTop - headerHeight;
+        // Ajuste o valor 0 para uma margem extra se o header cobrir muito
+        const offset = 0; 
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY - headerHeight - offset;
         
         window.scrollTo({
             top: elementPosition,
@@ -43,7 +45,7 @@ function openTab(evt, tabName) {
     }
 }
 
-// Função para abrir área do aluno com aba específica
+// Função para abrir área do aluno com aba específica (usado pelos cards de destaque)
 function openStudentArea(tabName) {
     // Primeiro, rolar para a área do aluno
     scrollToSection('area-aluno');
@@ -51,57 +53,40 @@ function openStudentArea(tabName) {
     // Aguardar um pouco para o scroll completar, então abrir a aba
     setTimeout(() => {
         // Encontrar o botão da aba correspondente
-        const tabButtons = document.getElementsByClassName('tab-button');
-        let targetButton = null;
-        
-        switch(tabName) {
-            case 'treinos-casa':
-                targetButton = tabButtons[0]; // Treinos por Nível
-                openTab(null, 'treinos-nivel');
-                break;
-            case 'plano-iniciante':
-                targetButton = tabButtons[4]; // Rotina Semanal
-                openTab(null, 'rotina');
-                break;
-            case 'alimentacao':
-                targetButton = tabButtons[2]; // PDF Downloads
-                openTab(null, 'downloads');
-                break;
-            default:
-                targetButton = tabButtons[0];
-                openTab(null, 'treinos-nivel');
-        }
-        
-        // Remover active de todos os botões
-        for (let i = 0; i < tabButtons.length; i++) {
-            tabButtons[i].classList.remove('active');
-        }
-        
-        // Adicionar active ao botão correto
-        if (targetButton) {
-            targetButton.classList.add('active');
-        }
-    }, 800);
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => {
+            if (button.dataset.tab === tabName) {
+                // Simula o clique no botão para ativar a aba
+                openTab({ currentTarget: button }, tabName);
+            }
+        });
+    }, 800); // Ajuste o tempo se o scroll for mais rápido/lento
 }
 
-// Função para simular download de PDFs
+// Função para simular download de PDFs (agora com downloads reais dos PDFs fornecidos)
 function downloadPDF(fileName) {
     // Criar um elemento temporário para simular o download
     const link = document.createElement('a');
-    link.href = '#';
-    link.download = fileName + '.pdf';
+    // Verifica o nome do arquivo para usar o caminho correto
+    let filePath;
+    if (fileName.includes('Guia') || fileName.includes('PlanoAlimentar') || fileName.includes('30Exercicios') || fileName.includes('Tecnicas') || fileName.includes('10Minutos')) {
+        filePath = fileName; // Os PDFs já estão na raiz
+    } else {
+        // Caso haja outros PDFs no futuro em subpastas, ajuste aqui
+        filePath = 'documents/' + fileName; // Exemplo: se tivesse uma pasta 'documents'
+    }
     
-    // Mostrar mensagem de que é uma demonstração
-    alert('Esta é uma demonstração. Em um site real, o arquivo "' + fileName + '.pdf" seria baixado automaticamente.');
+    link.href = filePath;
+    link.download = fileName; // O nome do arquivo para download
     
-    // Em um site real, você faria algo como:
-    // link.href = 'path/to/your/pdf/' + fileName + '.pdf';
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showDownloadFeedback(); // Mostra o feedback visual
 }
 
-// Função para simular reprodução de vídeos
+// Função para simular reprodução de vídeos (permanece simulada pois não temos os vídeos)
 function playVideo(videoTitle) {
     alert('Esta é uma demonstração. Em um site real, o vídeo "' + videoTitle + '" seria reproduzido.');
     
@@ -109,34 +94,39 @@ function playVideo(videoTitle) {
     // ou redirecionaria para uma página de vídeo
 }
 
-// Adicionar event listeners para downloads quando a página carregar
+// Adicionar event listeners quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
-    // Event listeners para botões de download
-    const downloadButtons = document.querySelectorAll('.download-btn');
-    downloadButtons.forEach((button, index) => {
+    // Event listeners para botões das abas
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const titles = [
-                'Guia_do_Iniciante',
-                '30_Exercicios_em_Casa',
-                'Plano_Alimentar_Simples'
-            ];
-            downloadPDF(titles[index] || 'Documento');
+            const tabName = this.dataset.tab;
+            openTab(event, tabName);
+        });
+    });
+
+    // Ativar a primeira aba por padrão ao carregar a página
+    openTab(null, 'treinos-nivel'); // 'treinos-nivel' é a primeira aba
+
+    // Event listeners para links de download
+    const downloadLinks = document.querySelectorAll('.download-btn');
+    downloadLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // Previne o comportamento padrão do link
+            const fileName = this.getAttribute('href'); // Pega o nome do arquivo do atributo href
+            downloadPDF(fileName);
         });
     });
     
-    // Event listeners para vídeos
-    const videoCards = document.querySelectorAll('.video-card');
-    videoCards.forEach((card, index) => {
+    // Event listeners para os cards de vídeo (agora exercícios de academia, mas mantendo a lógica de simulação)
+    const exerciseCards = document.querySelectorAll('#videos .exercise-card');
+    exerciseCards.forEach(card => {
         card.addEventListener('click', function() {
-            const titles = [
-                'Como fazer flexões corretamente',
-                'Treino com garrafa de água',
-                'Aquecimento em 5 minutos'
-            ];
-            playVideo(titles[index] || 'Vídeo');
+            const exerciseTitle = this.querySelector('h4').textContent;
+            playVideo(exerciseTitle);
         });
     });
-    
+
     // Event listener para scroll do header
     window.addEventListener('scroll', function() {
         const header = document.querySelector('.header');
@@ -147,10 +137,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Animação de entrada para elementos quando aparecem na tela
+    // Animação de entrada para elementos quando aparecem na tela (Observer API)
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.1, // Quando 10% do elemento está visível
+        rootMargin: '0px 0px -50px 0px' // Margem inferior negativa para acionar antes de chegar no rodapé
     };
     
     const observer = new IntersectionObserver(function(entries) {
@@ -158,41 +148,37 @@ document.addEventListener('DOMContentLoaded', function() {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target); // Deixa de observar depois de animar
             }
         });
     }, observerOptions);
     
     // Observar elementos para animação
-    const animatedElements = document.querySelectorAll('.preview-item, .highlight-card, .content-card, .download-card, .video-card, .extra-card');
+    const animatedElements = document.querySelectorAll('.preview-item, .highlight-card, .content-card, .download-card, .exercise-card, .routine-day, .extra-card, .calc-card');
     animatedElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
         observer.observe(el);
     });
-});
-
-// Função para navegação mobile (se necessário no futuro)
-function toggleMobileMenu() {
-    const nav = document.querySelector('.nav');
-    nav.classList.toggle('mobile-active');
-}
-
-// Função para smooth scroll nos links do header
-document.addEventListener('DOMContentLoaded', function() {
+    
+    // Função para smooth scroll nos links do header
     const navLinks = document.querySelectorAll('.nav a');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href').substring(1);
-            scrollToSection(targetId);
+            if (targetId) { // Garante que há um ID válido
+                scrollToSection(targetId);
+            }
         });
     });
-});
 
-// Função para adicionar efeitos de hover nos cards
-document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.highlight-card, .content-card, .download-card, .video-card, .extra-card');
+    // Efeitos de hover (já tratados no CSS com transições)
+    // Este bloco JS para hover pode ser removido se o CSS já faz o trabalho.
+    // Deixando comentado caso queira adicionar lógica JS para hover no futuro.
+    /*
+    const cards = document.querySelectorAll('.highlight-card, .content-card, .download-card, .video-card, .extra-card, .calc-card');
     
     cards.forEach(card => {
         card.addEventListener('mouseenter', function() {
@@ -203,30 +189,37 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'translateY(0)';
         });
     });
-});
+    */
 
-// Função para lazy loading de imagens (otimização)
-document.addEventListener('DOMContentLoaded', function() {
+    // Função para lazy loading de imagens (se houver imagens com data-src)
     const images = document.querySelectorAll('img[data-src]');
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
+    if (images.length > 0) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src'); // Remove o atributo para não carregar de novo
+                    imageObserver.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '0px 0px 100px 0px' // Carrega imagens 100px antes de entrar na viewport
         });
-    });
-    
-    images.forEach(img => imageObserver.observe(img));
-});
+        
+        images.forEach(img => imageObserver.observe(img));
+    }
 
-// Função para feedback visual nos botões
-document.addEventListener('DOMContentLoaded', function() {
+    // Função para feedback visual nos botões (efeito ripple)
     const buttons = document.querySelectorAll('button, .download-btn');
     
     buttons.forEach(button => {
+        // Assegura que o botão tem position: relative para o ripple funcionar
+        if (getComputedStyle(button).position === 'static') {
+            button.style.position = 'relative';
+        }
+        button.style.overflow = 'hidden'; // Esconde o ripple fora do botão
+        
         button.addEventListener('click', function(e) {
             // Criar efeito ripple
             const ripple = document.createElement('span');
@@ -235,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const rect = this.getBoundingClientRect();
             const size = Math.max(rect.width, rect.height);
+            // Posição do clique em relação ao botão
             const x = e.clientX - rect.left - size / 2;
             const y = e.clientY - rect.top - size / 2;
             
@@ -244,37 +238,33 @@ document.addEventListener('DOMContentLoaded', function() {
             
             setTimeout(() => {
                 ripple.remove();
-            }, 600);
+            }, 600); // Tempo da animação CSS
         });
     });
-});
 
-// CSS para o efeito ripple (adicionado dinamicamente)
-const rippleCSS = `
-.ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(0);
-    animation: ripple-animation 0.6s linear;
-    pointer-events: none;
-}
-
-@keyframes ripple-animation {
-    to {
-        transform: scale(4);
-        opacity: 0;
+    // CSS para o efeito ripple (adicionado dinamicamente para garantir que seja o último estilo)
+    const rippleCSS = `
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+        animation: ripple-animation 0.6s linear;
+        pointer-events: none;
     }
-}
-`;
 
-// Adicionar CSS do ripple ao documento
-document.addEventListener('DOMContentLoaded', function() {
+    @keyframes ripple-animation {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+    `;
+
     const style = document.createElement('style');
     style.textContent = rippleCSS;
     document.head.appendChild(style);
 });
-
 
 
 // ===== CALCULADORAS FITFORALL =====
@@ -285,7 +275,7 @@ function toggleCamposBF() {
     const quadrilRow = document.getElementById('quadril-row');
     
     if (sexo === 'feminino') {
-        quadrilRow.style.display = 'block';
+        quadrilRow.style.display = 'grid'; // Usa grid para manter o layout form-row
     } else {
         quadrilRow.style.display = 'none';
     }
@@ -642,7 +632,7 @@ function calcularBF() {
     resultadoDiv.classList.add('show');
 }
 
-// Função para limpar todos os resultados das calculadoras
+// Função para limpar todos os resultados das calculadoras (não está sendo usada por enquanto)
 function limparCalculadoras() {
     const resultados = document.querySelectorAll('.calc-result');
     resultados.forEach(resultado => {
@@ -656,26 +646,6 @@ function limparCalculadoras() {
         input.value = '';
     });
 }
-
-// Adicionar função para scroll suave para calculadoras
-function scrollToCalculadoras() {
-    scrollToSection('calculadoras');
-}
-
-// Atualizar a função de navegação para incluir calculadoras
-document.addEventListener('DOMContentLoaded', function() {
-    // Event listeners existentes...
-    
-    // Adicionar event listener para link de calculadoras
-    const calcLink = document.querySelector('a[href="#calculadoras"]');
-    if (calcLink) {
-        calcLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            scrollToCalculadoras();
-        });
-    }
-});
-
 
 // ===== MODAL DA POLÍTICA DE USO =====
 function openPolicyModal() {
@@ -704,19 +674,6 @@ document.addEventListener('keydown', function(event) {
 });
 
 // ===== DOWNLOAD DOS EXTRAS ESPECIAIS =====
-function downloadPDF(filename) {
-    // Simula o download do PDF
-    const link = document.createElement('a');
-    link.href = filename;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Feedback visual
-    showDownloadFeedback();
-}
-
 function showDownloadFeedback() {
     // Cria um elemento de feedback temporário
     const feedback = document.createElement('div');
@@ -744,19 +701,3 @@ function showDownloadFeedback() {
         }, 300);
     }, 3000);
 }
-
-// Adiciona animações CSS para o feedback
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
-
