@@ -1198,7 +1198,7 @@ html {
     display: block;
     margin-top: 8px;
     font-size: 0.8rem;
-    color: var(--text-secondary);
+    color: var(--text-gray); /* Alterado de text-secondary para text-gray */
     font-style: italic;
 }
 
@@ -1254,7 +1254,7 @@ html {
 }
 
 .exercise-icon i {
-    color: var(--bg-color);
+    color: var(--bg-dark); /* Alterado de bg-color para bg-dark */
     font-size: 1.5rem;
 }
 
@@ -1265,7 +1265,7 @@ html {
 }
 
 .exercise-card p {
-    color: var(--text-color);
+    color: var(--text-light); /* Alterado de text-color para text-light */
     margin-bottom: 8px;
     line-height: 1.5;
     font-size: 0.9rem;
@@ -1289,7 +1289,7 @@ html {
 }
 
 .modal-content {
-    background: var(--bg-color);
+    background: var(--bg-dark); /* Alterado de bg-color para bg-dark */
     margin: 5% auto;
     padding: 30px;
     border: 1px solid var(--primary-color);
@@ -1302,7 +1302,7 @@ html {
 }
 
 .close {
-    color: var(--text-secondary);
+    color: var(--text-gray); /* Alterado de text-secondary para text-gray */
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -1330,7 +1330,7 @@ html {
 }
 
 .policy-content p {
-    color: var(--text-color);
+    color: var(--text-light); /* Alterado de text-color para text-light */
     line-height: 1.6;
     margin-bottom: 10px;
 }
@@ -1378,4 +1378,3 @@ html {
         font-size: 0.9rem;
     }
 }
-
