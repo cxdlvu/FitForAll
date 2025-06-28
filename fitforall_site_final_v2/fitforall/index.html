@@ -11,7 +11,6 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo">
@@ -26,7 +25,6 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-image">
             <img src="images/hero_image.jpeg" alt="Pessoa treinando em casa">
@@ -43,7 +41,6 @@
         </div>
     </section>
 
-    <!-- Mini Preview Section -->
     <section class="mini-preview">
         <div class="container">
             <h3>O que você vai encontrar:</h3>
@@ -72,22 +69,21 @@
         </div>
     </section>
 
-    <!-- Highlights Section -->
     <section id="destaques" class="highlights">
         <div class="container">
             <h3>Destaques</h3>
             <div class="highlights-grid">
-                <div class="highlight-card" onclick="openStudentArea('treinos-casa')">
+                <div class="highlight-card" onclick="openStudentArea('treinos-nivel')">
                     <i data-lucide="home"></i>
                     <h4>Treine em Casa</h4>
                     <p>Exercícios eficazes usando apenas o peso do corpo e objetos do dia a dia</p>
                 </div>
-                <div class="highlight-card" onclick="openStudentArea('plano-iniciante')">
+                <div class="highlight-card" onclick="openStudentArea('rotina')">
                     <i data-lucide="calendar-days"></i>
                     <h4>Plano Iniciante 4 Semanas</h4>
                     <p>Programa completo para quem está começando a jornada fitness</p>
                 </div>
-                <div class="highlight-card" onclick="openStudentArea('alimentacao')">
+                <div class="highlight-card" onclick="openStudentArea('downloads')">
                     <i data-lucide="utensils"></i>
                     <h4>Como Comer Bem Gastando Pouco</h4>
                     <p>Dicas práticas de alimentação saudável com orçamento limitado</p>
@@ -96,14 +92,12 @@
         </div>
     </section>
 
-    <!-- Calculadoras Section -->
     <section id="calculadoras" class="calculadoras">
         <div class="container">
             <h2>🧮 Calculadoras FitForAll</h2>
             <p class="subtitle">Simples, úteis e 100% gratuitas</p>
             
             <div class="calculadoras-grid">
-                <!-- Calculadora 1: Gasto Calórico Diário -->
                 <div class="calc-card">
                     <div class="calc-header">
                         <i data-lucide="activity"></i>
@@ -151,7 +145,6 @@
                     </div>
                 </div>
 
-                <!-- Calculadora 2: Macronutrientes -->
                 <div class="calc-card">
                     <div class="calc-header">
                         <i data-lucide="utensils"></i>
@@ -183,7 +176,6 @@
                     </div>
                 </div>
 
-                <!-- Calculadora 3: IMC -->
                 <div class="calc-card">
                     <div class="calc-header">
                         <i data-lucide="scale"></i>
@@ -206,7 +198,6 @@
                     </div>
                 </div>
 
-                <!-- Calculadora 4: Tempo até a Meta -->
                 <div class="calc-card">
                     <div class="calc-header">
                         <i data-lucide="target"></i>
@@ -229,7 +220,6 @@
                     </div>
                 </div>
 
-                <!-- Calculadora 5: Consumo de Água -->
                 <div class="calc-card">
                     <div class="calc-header">
                         <i data-lucide="droplets"></i>
@@ -256,7 +246,6 @@
                     </div>
                 </div>
 
-                <!-- Calculadora 6: Percentual de Gordura -->
                 <div class="calc-card">
                     <div class="calc-header">
                         <i data-lucide="percent"></i>
@@ -302,7 +291,6 @@
         </div>
     </section>
 
-    <!-- Student Area -->
     <section id="area-aluno" class="student-area">
         <div class="container">
             <h2>Área do Aluno</h2>
@@ -521,7 +509,6 @@
                 </div>
             </div>
 
-            <!-- Extra Section -->
             <div class="extra-section">
                 <h4>Extras Especiais</h4>
                 <div class="extra-grid">
@@ -545,7 +532,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -565,7 +551,6 @@
         </div>
     </footer>
 
-    <!-- Policy Modal -->
     <div id="policyModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closePolicyModal()">&times;</span>
@@ -600,4 +585,3 @@
     <script src="js/script.js"></script>
 </body>
 </html>
-
